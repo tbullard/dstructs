@@ -1,0 +1,92 @@
+#ifndef HEAP_H
+#define HEAP_H
+
+#include "ugf.h"
+
+#define DEFAULT_HEAP_CAPACY 89
+
+typedef int (*heap_comp)(const void*, const void*);
+
+struct heap_node;
+
+typedef struct priority_queue {
+    struct heap_node** heap_memory;
+    size_t size;
+    size_t capacity;
+    heap_comp heap_func;
+    generic_comp comp_func;
+    generic_cpy copy_func;
+    generic_op free_func;
+} heap;
+
+heap* heap_create(unsigned int init_capacity,
+                  heap_comp heap_func,
+                  generic_comp comp_func,
+                  generic_cpy copy_func,
+                  generic_op free_func);
+
+heap* heap_copy(heap* p_queue);
+
+void* heap_peek(heap* p_queue);
+void* heap_add(heap* p_queue, void* data);
+
+int heap_remove(heap* p_queue);
+int heap_up_mod_data(heap* p_queue, void* change_node, void* data);
+int heap_is_empty(heap* p_queue);
+int heap_contains(heap* p_queue, const void* data);
+
+size_t heap_size(heap* p_queue);
+
+void heap_empty(heap* p_queue);
+void heap_kill(heap* p_queue);
+void heap_dissolve(heap* p_queue);
+void heap_traverse(heap* p_queue, generic_op do_func);
+
+#endif
+
+/*!
+  \file heap.h
+  \brief Addressable Heap header file.
+  \details Header file for heap, contains all functions and declarations
+  a user may call.
+  \warning It is assumed that all data inserted into the priority queue is heap allocated.
+  Failure durring deallocation will occur if that is not the case.
+  \author Timothy Bullard
+  \version 1.0
+*/
+
+/*!
+  \def DEFAULT_HEAP_CAPACY
+  \brief Default heap capacity, used in heap_create fucntion if invalid capacity is given.
+*/
+
+/*!
+   \var typedef int (*heap_comp)(const void*, const void*)
+   \brief Typedef form of heap comparison functions.
+   \param Pointer to \a data-1 being examined.
+   \param Pointer to \a data-2 being examined.
+   \return 1 if by priority \a data-1 should be behind \a data-2, 0 if otherwise.
+   \details An example using ints that establishes a min-heap:
+   \code{.c}
+int integer_heap_comp(const void* int1, const void* int2) {
+    int heap_comp_value;
+    heap_comp_value = 0;
+    if(*(int*)int1 > *(int*)int2) {
+        heap_comp_value = 1;
+    return comp_value;
+}
+   \endcode
+*/
+
+
+/*!
+  \fn heap* create_heap(heap_comp comp_func_queue, generic_comp comp_func_equal,
+  generic_cpy copy_func, generic_op free_func)
+  \brief Creates and returns a newly allocated heap.
+  \param comp_func_queue A heap_comp style function pointer, used to establish heap priority.
+  \param comp_func_equal A generic_comp style function pointer, used to compare data held within heap for non-priority purposes.
+  \param copy_func A generic_cpy style function pointer, used to copy data held within heap.
+  \param free_func A generic_op style function pointer, used to deallocate data held within heap.
+  \return Newly allocated heap with given function pointer type properties.
+*/
+
